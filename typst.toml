@@ -1,0 +1,8 @@
+[package]
+name = "xnote"
+version = "0.1.0"
+entrypoint = "lib.typ"
+authors = ["xichen"]
+license = "MIT"
+description = "Local Typst note template and note components for research notes."
+compiler = "0.15.0"
