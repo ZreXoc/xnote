@@ -24,9 +24,9 @@
   gray-soft: rgb("#f2f4f7"),
 )
 
-#let zh-fonts = ("Arial", "Noto Sans CJK SC", "Microsoft YaHei", "PingFang SC")
-#let sans-fonts = ("Helvetica Neue", "PingFang SC", "Microsoft YaHei", "Arial")
-#let mono-fonts = ("Menlo", "Consolas", "Courier New")
+#let zh-fonts = ("Arial", "Noto Sans CJK SC", "Microsoft YaHei")
+#let sans-fonts = zh-fonts
+#let mono-fonts = ("Consolas", "Courier New")
 
 #let xnote(
   title: "",

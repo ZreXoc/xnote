@@ -26,7 +26,7 @@
 
 = 基础排版
 
-正文默认使用无衬线字体：英文 Arial，中文优先 Noto Sans CJK SC，回退到 Microsoft YaHei、PingFang SC。代码和数学公式保留原有字体设置。
+正文与标题统一使用无衬线字体：英文 Arial，中文优先 Noto Sans CJK SC，回退到 Microsoft YaHei。行内代码使用 Consolas，回退到 Courier New；数学公式保留原有字体设置。编译环境需安装上述字体，避免缺失字体警告。
 
 正文直接写，支持 Typst 全部原生语法：*强调*、_斜体_、行内代码 `top-k`，以及数学公式 $L = sum_(i=1)^N ell_i$。
 
