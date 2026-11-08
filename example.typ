@@ -6,6 +6,8 @@
   title: "xnote 组件示例",
   author: "xichen",
   date: "2026-07-20",
+  callout-style: "icon",
+  callout-icons: (warning: "(!)", observation: "(o)"),
   abstract: [演示 xnote 的全部组件：模板参数、16 种 callout、行内工具、三线表，以及带来源定位和批注的文本、图片、代码摘录。可作为新笔记的起点模板。],
 )
 
@@ -20,6 +22,8 @@
   ([`outline-title`], [默认 `auto` 生成目录；设 `none` 关闭]),
   ([`heading-numbering`], [默认 `"1.1"`；设 `none` 取消标题编号]),
   ([`font-size` / `margin` / `paper`], [默认 `10.5pt` / `(x: 2.2cm, y: 2.4cm)` / `"a4"`]),
+  ([`callout-style`], [默认 `"icon"` 仅符号；`"label"` 为文字标签；`"plain"` 无标识]),
+  ([`callout-icons`], [按类型覆盖符号，如 `(warning: "(!)", observation: "(o)")`]),
 ))
 
 #tip[不想每次开头都有目录？`outline-title: none`，短笔记更干净。]
@@ -40,7 +44,7 @@ def route(x, experts, k=4):
 
 = Callout 块
 
-16 种语义化块，统一语法 `#kind[内容]`。默认无图标，使用浅底色和细左边线；短标签与正文同行，不单独占一行。`title:` 可自定义标签，`title: none` 隐藏标签。
+16 种语义化块，统一语法 `#kind[内容]`。使用浅底色和细左边线；默认以简单符号标识，不显示类型标题。符号与正文同行，不单独占一行。
 
 == 通用提示类
 
@@ -84,11 +88,29 @@ def route(x, experts, k=4):
 
 == Callout 参数
 
+在文档开头统一配置：
+
+```typst
+#show: xnote.with(
+  title: "研究笔记",
+  callout-style: "icon",
+  callout-icons: (
+    warning: "(!)",
+    observation: "(o)",
+    note: "(i)",
+  ),
+)
+```
+
+`"icon"` 仅显示符号，`"label"` 仅显示类型名称，`"plain"` 两者都隐藏。
+显式传入 `title:` 时显示自定义标题；单块 `icon:` 优先于全局样式，`icon: none` 隐藏符号。
+`title: none` 隐藏标题。上述设置也适用于 `annotation` 和 `side-note`。
+
 #callout(kind: "note", title: "自定义标题", compact: true)[
   所有 `#kind[...]` 都是 `#callout` 的包装。默认 `compact: true`；设为 `false` 可增加留白。`breakable: false` 禁止跨页断开；`color:` 和 `fill:` 可覆盖配色。
 ]
 
-#note(title: none)[无标签样式，只保留正文、浅底色和左边线。]
+#note(title: none, icon: none)[无标识样式，只保留正文、浅底色和左边线。]
 
 = 行内与块级小工具
 

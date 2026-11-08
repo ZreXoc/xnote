@@ -28,6 +28,14 @@
 #let sans-fonts = zh-fonts
 #let mono-fonts = ("Consolas", "Courier New")
 
+#let _callout-icons = (
+  note: "(i)", tip: "(+)", important: "(!)", warning: "(!)",
+  danger: "(x)", question: "(?)", definition: "(=)", theorem: "(=)",
+  proof: "(.)", example: "(e)", task: "(v)", todo: "( )",
+  experiment: "(~)", observation: "(o)", hypothesis: "(?)", result: "(>)",
+)
+#let _callout-config = state("xnote-callout-config", (style: "icon", icons: _callout-icons))
+
 #let xnote(
   title: "",
   author: none,
@@ -39,8 +47,12 @@
   font-size: 10.5pt,
   heading-numbering: "1.1",
   outline-title: auto,
+  callout-style: "icon",
+  callout-icons: (:),
   body,
 ) = {
+  assert(callout-style in ("icon", "label", "plain"), message: "callout-style must be icon, label, or plain")
+  _callout-config.update((style: callout-style, icons: _callout-icons + callout-icons))
   set document(title: title, author: if author == none { () } else { author })
   set page(paper: paper, margin: margin)
   set text(lang: lang, font: zh-fonts, size: font-size, fill: colors.ink)
@@ -116,16 +128,23 @@
   body,
   title: auto,
   kind: "note",
+  icon: auto,
   color: auto,
   fill: auto,
   radius: 2pt,
   breakable: true,
   compact: true,
-) = {
+) = context {
+  let config = _callout-config.get()
   let st = _kind-style(kind)
   let primary = if color == auto { st.primary } else { color }
   let bg = if fill == auto { st.fill } else { fill }
-  let head = if title == auto { st.title } else { title }
+  let head = if title == auto {
+    if config.style == "label" { st.title } else { none }
+  } else { title }
+  let mark = if icon == auto {
+    if config.style == "icon" { config.icons.at(kind, default: "(i)") } else { none }
+  } else { icon }
   block(
     width: 100%,
     breakable: breakable,
@@ -137,7 +156,9 @@
     below: 0.6em,
   )[
     #set par(first-line-indent: 0pt)
-    #if head != none and head != "" [
+    #if mark != none and mark != "" [
+      #text(font: mono-fonts, weight: 700, size: 0.9em, fill: primary, mark)#h(0.5em)
+    ]#if head != none and head != "" [
       #text(font: sans-fonts, weight: 600, size: 0.9em, fill: primary, head)#h(0.6em)
     ]#body
   ]
