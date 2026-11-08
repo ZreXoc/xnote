@@ -40,7 +40,7 @@ def route(x, experts, k=4):
 
 = Callout 块
 
-16 种语义化块，统一语法 `#kind[内容]`，全部支持 `title:` 自定义标题。
+16 种语义化块，统一语法 `#kind[内容]`。默认无图标，使用浅底色和细左边线；短标签与正文同行，不单独占一行。`title:` 可自定义标签，`title: none` 隐藏标签。
 
 == 通用提示类
 
@@ -85,8 +85,10 @@ def route(x, experts, k=4):
 == Callout 参数
 
 #callout(kind: "note", title: "自定义标题", compact: true)[
-  所有 `#kind[...]` 都是 `#callout` 的包装。`compact: true` 更紧凑；`breakable: false` 禁止跨页断开；`color:` 和 `fill:` 可覆盖配色。
+  所有 `#kind[...]` 都是 `#callout` 的包装。默认 `compact: true`；设为 `false` 可增加留白。`breakable: false` 禁止跨页断开；`color:` 和 `fill:` 可覆盖配色。
 ]
+
+#note(title: none)[无标签样式，只保留正文、浅底色和左边线。]
 
 = 行内与块级小工具
 

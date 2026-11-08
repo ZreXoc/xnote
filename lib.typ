@@ -92,55 +92,54 @@
 
 #let _kind-style(kind) = {
   let styles = (
-    note: (title: "注释", icon: "✎", primary: colors.blue, fill: colors.blue-soft),
-    tip: (title: "提示", icon: "★", primary: colors.green, fill: colors.green-soft),
-    important: (title: "重要", icon: "!", primary: colors.purple, fill: colors.purple-soft),
-    warning: (title: "警告", icon: "⚠", primary: colors.amber, fill: colors.amber-soft),
-    danger: (title: "危险", icon: "×", primary: colors.red, fill: colors.red-soft),
-    question: (title: "问题", icon: "?", primary: colors.purple, fill: colors.purple-soft),
-    definition: (title: "定义", icon: "◇", primary: colors.cyan, fill: colors.cyan-soft),
-    theorem: (title: "定理", icon: "∴", primary: colors.purple, fill: colors.purple-soft),
-    proof: (title: "证明", icon: "□", primary: colors.gray, fill: colors.gray-soft),
-    example: (title: "例子", icon: "#", primary: colors.green, fill: colors.green-soft),
-    task: (title: "任务", icon: "✓", primary: colors.blue, fill: colors.blue-soft),
-    todo: (title: "待办", icon: "☐", primary: colors.amber, fill: colors.amber-soft),
-    experiment: (title: "实验", icon: "λ", primary: colors.cyan, fill: colors.cyan-soft),
-    observation: (title: "观察", icon: "◉", primary: colors.blue, fill: colors.blue-soft),
-    hypothesis: (title: "假设", icon: "△", primary: colors.amber, fill: colors.amber-soft),
-    result: (title: "结果", icon: "→", primary: colors.green, fill: colors.green-soft),
+    note: (title: "注释", primary: colors.blue, fill: colors.blue-soft),
+    tip: (title: "提示", primary: colors.green, fill: colors.green-soft),
+    important: (title: "重要", primary: colors.purple, fill: colors.purple-soft),
+    warning: (title: "警告", primary: colors.amber, fill: colors.amber-soft),
+    danger: (title: "危险", primary: colors.red, fill: colors.red-soft),
+    question: (title: "问题", primary: colors.purple, fill: colors.purple-soft),
+    definition: (title: "定义", primary: colors.cyan, fill: colors.cyan-soft),
+    theorem: (title: "定理", primary: colors.purple, fill: colors.purple-soft),
+    proof: (title: "证明", primary: colors.gray, fill: colors.gray-soft),
+    example: (title: "例子", primary: colors.green, fill: colors.green-soft),
+    task: (title: "任务", primary: colors.blue, fill: colors.blue-soft),
+    todo: (title: "待办", primary: colors.amber, fill: colors.amber-soft),
+    experiment: (title: "实验", primary: colors.cyan, fill: colors.cyan-soft),
+    observation: (title: "观察", primary: colors.blue, fill: colors.blue-soft),
+    hypothesis: (title: "假设", primary: colors.amber, fill: colors.amber-soft),
+    result: (title: "结果", primary: colors.green, fill: colors.green-soft),
   )
-  styles.at(kind, default: (title: str(kind), icon: "", primary: colors.gray, fill: colors.gray-soft))
+  styles.at(kind, default: (title: str(kind), primary: colors.gray, fill: colors.gray-soft))
 }
 
 #let callout(
   body,
-  title: none,
+  title: auto,
   kind: "note",
-  icon: auto,
   color: auto,
   fill: auto,
-  radius: 4pt,
+  radius: 2pt,
   breakable: true,
-  compact: false,
+  compact: true,
 ) = {
   let st = _kind-style(kind)
   let primary = if color == auto { st.primary } else { color }
   let bg = if fill == auto { st.fill } else { fill }
-  let head = if title == none { st.title } else { title }
-  let mark = if icon == auto { st.icon } else { icon }
+  let head = if title == auto { st.title } else { title }
   block(
     width: 100%,
     breakable: breakable,
     fill: bg,
-    stroke: (left: 4pt + primary, rest: 0.4pt + primary.lighten(45%)),
+    stroke: (left: 2pt + primary),
     radius: radius,
-    inset: if compact { (x: 0.75em, y: 0.55em) } else { (x: 0.95em, y: 0.75em) },
-    outset: (y: 0.45em),
+    inset: if compact { (x: 0.7em, y: 0.45em) } else { (x: 0.9em, y: 0.7em) },
+    above: 0.6em,
+    below: 0.6em,
   )[
     #set par(first-line-indent: 0pt)
-    #text(font: sans-fonts, weight: 700, fill: primary)[#if mark != "" { mark + " " }#head]
-    #v(if compact { 0.25em } else { 0.45em })
-    #body
+    #if head != none and head != "" [
+      #text(font: sans-fonts, weight: 600, size: 0.9em, fill: primary, head)#h(0.6em)
+    ]#body
   ]
 }
 
@@ -193,7 +192,7 @@
 }
 
 #let annotation(body, title: "批注", ..args) = callout(
-  body, title: title, kind: "note", icon: "✎", compact: true, ..args,
+  body, title: title, kind: "note", compact: true, ..args,
 )
 
 // Content is native Typst: quoted text, image(...), raw code, or a combination.
