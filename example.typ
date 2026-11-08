@@ -6,7 +6,7 @@
   title: "xnote 组件示例",
   author: "xichen",
   date: "2026-07-20",
-  abstract: [演示 xnote 的全部组件：模板参数、16 种 callout、行内工具与三线表。可作为新笔记的起点模板。],
+  abstract: [演示 xnote 的全部组件：模板参数、16 种 callout、行内工具、三线表，以及带来源定位和批注的文本、图片、代码摘录。可作为新笔记的起点模板。],
 )
 
 = 模板参数
@@ -133,6 +133,91 @@ def route(x, experts, k=4):
 
 #tip[`booktabs` 是 `tri-table` 的别名，习惯 LaTeX 命名可以直接用。]
 
+= 引用、摘录与批注
+
+`excerpt` 接收任意 Typst 内容，不自动改写原文；正文、图片和代码使用同一接口。
+必填的 `source:` 可以是文献名称，也可以是原生 `cite`，与文末参考文献联动。
+`page:` 记录原文页码，`location:` 记录章节、段落、公式、图号或代码行号，
+`url:` 提供可点击的原文链接，`annotation:` 把自己的解读与摘录正文分开。
+页码按原文填写；PDF 阅读器页序与印刷页码不一致时，在 `location:` 中注明。
+
+== 论文文本
+
+#excerpt(
+  source: cite(<vaswani2017attention>),
+  page: 1,
+  location: [Abstract],
+  url: "https://arxiv.org/pdf/1706.03762#page=1",
+  annotation: [这里强调的是架构不依赖 recurrence 和 convolution，并不意味着不需要位置信息。],
+)[
+  #quote(block: true)[We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.]
+]
+
+== 图片与图注
+
+下面的图片是本地绘制的接口演示图，*不是论文原图*。实际使用时将图片路径替换为论文截图，
+并在 `location:` 中填写原文图号及子图编号；可设 `breakable: false` 保持图片和批注在同一页。
+
+#excerpt(
+  source: [xnote 本地演示素材],
+  location: [assets/excerpt-demo.svg；非论文原图],
+  title: "图片摘录",
+  breakable: false,
+  annotation: [批注可解释箭头、符号或裁剪范围；原始图注应留在摘录正文中。],
+)[
+  #image("assets/excerpt-demo.svg", width: 90%)
+  #par[演示图：Input → Attention → Output。]
+]
+
+== 代码摘录
+
+代码可直接放 fenced raw block，保留语言高亮；来源位置手动标明文件、版本和行号。
+下面是演示代码，不宣称来自论文或真实仓库。
+
+#excerpt(
+  source: [本节演示代码],
+  location: [route.py，L1–L2；实际引用时应补充 commit],
+  title: "代码摘录",
+  annotation: [这里返回 expert ids；未展示 gate weights 和 expert 输出聚合。],
+)[
+  ```python
+  def route(logits, k):
+      return logits.topk(k, dim=-1).indices
+  ```
+]
+
+== 独立来源与批注
+
+已有图片或段落不需要外框时，可单独加来源行：
+
+#source-ref(
+  cite(<vaswani2017attention>),
+  page: 3,
+  location: [§3.2.1，Eq. (1)],
+  url: "https://arxiv.org/pdf/1706.03762#page=3",
+)
+
+#annotation(title: "阅读批注")[区分原文结论与自己的推断；行内仍可使用 #highlight[高亮] 和公式 $Q K^T / sqrt(d_k)$。]
+
+调用方式：
+
+```typst
+#excerpt(
+  source: cite(<paper-key>),
+  page: 5,
+  location: [§3.2，Fig. 4(b)],
+  url: "https://example.org/paper.pdf#page=5",
+  annotation: [我的解读。],
+)[
+  #image("assets/paper-figure.png", width: 90%)
+  原图图注。
+]
+#bibliography("refs.bib", title: "参考文献")
+```
+
+`source-ref` 不解析或自动验证页码；链接能否跳到指定页取决于 PDF 阅读器。
+这些组件生成正文中的阅读批注，不是 PDF 阅读器里的可编辑注释对象。
+
 = 迁移自 xyznote
 
 xnote 的 callout 名字（`definition`、`important`、`theorem` 等）与 xyznote 基本一致，迁移通常只需把首行改成：
@@ -142,3 +227,7 @@ xnote 的 callout 名字（`definition`、`important`、`theorem` 等）与 xyzn
 ```
 
 #warning[xyznote 特有的组件（如参考文献样式、特定封面）xnote 未覆盖，迁移前先 grep 一遍原文件用到的函数名。]
+
+= 参考文献
+
+#bibliography("refs.bib", title: none)

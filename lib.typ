@@ -183,6 +183,53 @@
 #let side-note(body, title: "旁注") = callout(title: title, kind: "note", compact: true)[#body]
 #let sectionline = align(center)[#v(1.5em)#text(fill: colors.muted)[＊　＊　＊]#v(1.5em)]
 
+// source accepts plain text or native cite(...); location keeps the paper's own numbering.
+#let source-ref(source, page: none, location: none, url: none) = {
+  let parts = (source,)
+  if page != none { parts.push([p. #page]) }
+  if location != none { parts.push(location) }
+  if url != none { parts.push(link(url)[原文]) }
+  text(size: 0.88em, fill: colors.muted)[来源：#parts.join([ · ])]
+}
+
+#let annotation(body, title: "批注", ..args) = callout(
+  body, title: title, kind: "note", icon: "✎", compact: true, ..args,
+)
+
+// Content is native Typst: quoted text, image(...), raw code, or a combination.
+#let excerpt(
+  body,
+  source: none,
+  page: none,
+  location: none,
+  url: none,
+  annotation: none,
+  title: "原文摘录",
+  breakable: true,
+) = block(
+  width: 100%,
+  breakable: breakable,
+  stroke: 0.6pt + colors.line,
+  radius: 4pt,
+  inset: 0.9em,
+  above: 0.8em,
+  below: 0.8em,
+)[
+  #assert(source != none, message: "excerpt requires source:")
+  #set par(first-line-indent: 0pt)
+  #text(font: sans-fonts, weight: 700, title)
+  #v(0.5em)
+  #body
+  #v(0.5em)
+  #source-ref(source, page: page, location: location, url: url)
+  #if annotation != none [
+    #v(0.5em)
+    #line(length: 100%, stroke: 0.5pt + colors.light-line)
+    #text(font: sans-fonts, weight: 700, fill: colors.blue)[批注]
+    #par(annotation)
+  ]
+]
+
 #let tri-table(
   columns: auto,
   align: auto,
